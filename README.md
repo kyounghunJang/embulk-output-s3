@@ -20,6 +20,9 @@
 - **sequence_format**: format for sequence part of target keys (string, default: '.%03d.%02d')
 - **bucket**: S3 bucket name (string, required)
 - **endpoint**: S3 endpoint login user name (string, optional)
+- **path_style_access**: Enables path-style access for S3 buckets (boolean, default: false).  
+  By default, S3 uses virtual-hosted-style URLs When `path_style_access` is set to `true`
+  This option is useful for compatibility with certain S3-compatible services, such as Oracle Cloud Infrastructure (OCI), which may require path-style access. 
 - **access_key_id**: AWS access key id. This parameter is required when your agent is not running on EC2 instance with an IAM Role. (string, defualt: null)
 - **secret_access_key**: AWS secret key. This parameter is required when your agent is not running on EC2 instance with an IAM Role. (string, defualt: null)
 - **tmp_path**: temporary file directory. If null, it is associated with the default FileSystem. (string, default: null)

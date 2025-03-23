@@ -116,6 +116,11 @@ public class S3FileOutputPlugin
         @Config("region")
         @ConfigDefault("null")
         Optional<String> getRegion();
+
+        @Config("path_style_access")
+        @ConfigDefault("false")
+        Optional<Boolean> getPathStyleAccess();
+
     }
 
     public static class S3FileOutput
@@ -140,6 +145,8 @@ public class S3FileOutputPlugin
         {
             Optional<String> endpoint = task.getEndpoint();
             Optional<String> region = task.getRegion();
+            Optional<Boolean> path_style_access = task.getPathStyleAccess();
+
 
             final AmazonS3ClientBuilder builder = AmazonS3ClientBuilder
                     .standard()
@@ -173,8 +180,17 @@ public class S3FileOutputPlugin
                 // no explicit region or endpoint as the region (inferrable from endpoint) are necessary for signing.
                 builder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("s3.amazonaws.com", null));
             }
-
+            
             builder.withForceGlobalBucketAccessEnabled(true);
+            
+            // This code is written to ensure compatibility with bucket services like OCI (Oracle Cloud Infrastructure),
+            // which use a different endpoint format. Enabling path-style access allows the client to work with such services.
+            // Additionally, global bucket access is disabled to avoid conflicts 
+            if (path_style_access.orElse(false)) {
+                builder.withPathStyleAccessEnabled(true);
+                builder.withForceGlobalBucketAccessEnabled(false);
+            }
+
             return builder.build();
         }
 
