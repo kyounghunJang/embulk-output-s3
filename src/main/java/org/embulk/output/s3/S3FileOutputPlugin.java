@@ -178,15 +178,17 @@ public class S3FileOutputPlugin
                 // no explicit region or endpoint as the region (inferrable from endpoint) are necessary for signing.
                 builder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("s3.amazonaws.com", null));
             }
-            
-            builder.withForceGlobalBucketAccessEnabled(true);
-            
-            // This code is written to ensure compatibility with bucket services like OCI (Oracle Cloud Infrastructure),
-            // which use a different endpoint format. Enabling path-style access allows the client to work with such services.
-            // Additionally, global bucket access is disabled to avoid conflicts 
-            if (path_style_access.orElse(false)) {
+                        
+            // AWS S3 requires virtual-hosted style access (usePathStyleAccess=false),
+            // whereas some S3-compatible services may require path-style access (usePathStyleAccess=true).
+            // Additionally, AWS S3 should enable global bucket access to resolve the correct endpoint,
+            // but for S3-compatible storage, this should be disabled to avoid potential conflicts.
+            if (usePathStyleAccess) {
                 builder.withPathStyleAccessEnabled(true);
                 builder.withForceGlobalBucketAccessEnabled(false);
+            }
+            else{
+                builder.withForceGlobalBucketAccessEnabled(true);
             }
 
             return builder.build();
