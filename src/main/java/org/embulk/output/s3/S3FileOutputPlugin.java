@@ -144,8 +144,7 @@ public class S3FileOutputPlugin
         {
             Optional<String> endpoint = task.getEndpoint();
             Optional<String> region = task.getRegion();
-            Optional<Boolean> path_style_access = task.getPathStyleAccess();
-
+            final boolean usePathStyleAccess = task.getUsePathStyleAccess();
 
             final AmazonS3ClientBuilder builder = AmazonS3ClientBuilder
                     .standard()
