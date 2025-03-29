@@ -117,10 +117,9 @@ public class S3FileOutputPlugin
         @ConfigDefault("null")
         Optional<String> getRegion();
 
-        @Config("path_style_access")
+        @Config("use_path_style_access")
         @ConfigDefault("false")
-        Optional<Boolean> getPathStyleAccess();
-
+        boolean getUsePathStyleAccess();
     }
 
     public static class S3FileOutput
